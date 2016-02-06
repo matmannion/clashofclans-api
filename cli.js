@@ -28,11 +28,20 @@ clashofclans.clanInfo(tag)
     return clashofclans.searchClans({
       locationId: location,
       minClanLevel: clanLevel,
-    }).then(clans => clans.filter(c => c.warWins > clan.warWins));
-  })
-  .then(clans => {
-    console.log(clans.length);
+    }).then(clans =>
+      clans.filter(c => c.warWins >= clan.warWins)
+        .sort((clan1, clan2) => clan1.warWins - clan2.warWins)
+        .reverse()
+    ).then(clans => {
+      console.log(`Clans in ${clan.location.name}, minimum clan level ${clan.clanLevel}`);
+      console.log('==========================================');
+      console.log('');
 
-    process.exit(0);
+      clans.forEach((c, index) => {
+        console.log(`${index + 1}. ${c.name} [${c.clanLevel}] - ${c.warWins}`);
+      });
+
+      process.exit(0);
+    });
   })
   .catch(e => console.error(e.message, e.stack));
